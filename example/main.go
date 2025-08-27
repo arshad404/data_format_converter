@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	converter "github.com/arshad404/data_format_converter"
 )
@@ -32,4 +33,22 @@ app:
 		log.Fatal(err)
 	}
 	fmt.Println("\nJSON → YAML:\n", string(backToYAML))
+
+	// Example 1: Convert YAML file → JSON file using streaming
+	yamlFile, err := os.Open("config.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer yamlFile.Close()
+
+	jsonFile, err := os.Create("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer jsonFile.Close()
+
+	if err := conv.YAMLToJSONReader(yamlFile, jsonFile); err != nil {
+		log.Fatal("YAML → JSON failed:", err)
+	}
+	log.Println("Converted config.yaml → config.json")
 }
